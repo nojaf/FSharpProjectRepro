@@ -5,7 +5,7 @@ open System.IO
 open FSharp.Compiler.CodeAnalysis
 open NUnit.Framework
 
-let typeCheck implementation =
+let typeCheck implementation signature =
 
         let randomName = Guid.NewGuid().ToString "N"
         let tempFolder = Path.Combine (Path.GetTempPath (), randomName)
@@ -15,12 +15,14 @@ let typeCheck implementation =
             dirInfo.Create ()
             let implPath = Path.Combine (tempFolder, "A.fs")
             File.WriteAllText (implPath, implementation)
+            let sigFPath = Path.Combine (tempFolder, "A.fsi")
+            File.WriteAllText (sigFPath, signature)
 
             let projectOptions : FSharpProjectOptions =
                 {
                     ProjectFileName = "A"
                     ProjectId = None
-                    SourceFiles = [| implPath |]
+                    SourceFiles = [| sigFPath ; implPath |]
                     OtherOptions = [|"--optimize+" |]
                     ReferencedProjects = [||]
                     IsIncompleteTypeCheckEnvironment = false
@@ -33,7 +35,7 @@ let typeCheck implementation =
 
             let checker = FSharpChecker.Create ()
             let result = checker.ParseAndCheckProject projectOptions |> Async.RunSynchronously
-            ()
+            Assert.IsEmpty result.Diagnostics
         finally
             if Directory.Exists tempFolder then
                 Directory.Delete (tempFolder, true)
@@ -51,4 +53,10 @@ let (|Red|Blue|Yellow|) b =
     | 0 -> Red("hey", DateTime.Now)
     | 1 -> Blue(9., [| 'a' |])
     | _ -> Yellow [ 1uy ]
+"""
+        """
+module Colour
+
+open System
+val (|Red|Blue|Yellow|): b: int -> Choice<(string * DateTime), (float * char[]), byte list>
 """
