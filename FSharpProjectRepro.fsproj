@@ -19,8 +19,8 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
-    <PackageReference Include="FSharp.Compiler.Service" Version="41.0.6" />
-    <PackageReference Include="FSharp.Core" Version="6.0.6" />
+    <PackageReference Include="FSharp.Compiler.Service" Version="42.7.100-preview.22473.1" />
+    <PackageReference Include="FSharp.Core" Version="7.0.0-beta.22473.1" />
   </ItemGroup>
 
 </Project>
